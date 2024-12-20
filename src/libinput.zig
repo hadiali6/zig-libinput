@@ -9,6 +9,7 @@ pub const Device = opaque {
         tablet_pad = 4,
         gesture = 5,
         @"switch" = 6,
+        _,
     };
 
     extern fn libinput_device_get_device_group(device: *Device) *DeviceGroup;
@@ -34,11 +35,13 @@ pub const LogPriority = enum(c_int) {
     debug = 10,
     info = 20,
     @"error" = 30,
+    _,
 };
 
 pub const KeyState = enum(c_int) {
     pressed,
     released,
+    _,
 };
 
 pub const Led = enum(c_int) {
@@ -47,16 +50,19 @@ pub const Led = enum(c_int) {
     scroll_lock = (1 << 2),
     compose = (1 << 3),
     kana = (1 << 4),
+    _,
 };
 
 pub const ButtonState = enum(c_int) {
     pressed,
     released,
+    _,
 };
 
 pub const PointerAxis = enum(c_int) {
     scroll_vertical,
     scroll_horizontal,
+    _,
 };
 
 pub const PointerAxisSource = enum(c_int) {
@@ -64,16 +70,19 @@ pub const PointerAxisSource = enum(c_int) {
     finger,
     continuous,
     wheel_tilt,
+    _,
 };
 
 pub const TabletPadRingAxisSource = enum(c_int) {
     unkown = 1,
     finger,
+    _,
 };
 
 pub const TabletPadStripAxisSource = enum(c_int) {
     unkown = 1,
     finger,
+    _,
 };
 
 pub const TabletToolType = enum(c_int) {
@@ -85,16 +94,19 @@ pub const TabletToolType = enum(c_int) {
     mouse,
     lens,
     totem,
+    _,
 };
 
 pub const TabletToolProximityState = enum(c_int) {
     out,
     in,
+    _,
 };
 
 pub const TabletToolTipState = enum(c_int) {
     up,
     down,
+    _,
 };
 
 pub const TabletPadModeGroup = opaque {};
