@@ -12,6 +12,42 @@ pub const Device = opaque {
         _,
     };
 
+    extern fn libinput_device_ref(device: *Device) *Device;
+    pub const ref = libinput_device_ref;
+
+    extern fn libinput_device_unref(device: *Device) ?*Device;
+    pub const unref = libinput_device_unref;
+
+    extern fn libinput_device_set_user_data(device: *Device, user_data: *anyopaque) void;
+    pub const setUserData = libinput_device_set_user_data;
+
+    extern fn libinput_device_get_user_data(device: *Device) ?*anyopaque;
+    pub const getUserData = libinput_device_get_user_data;
+
+    extern fn libinput_device_get_context(device: *Device) *Device;
+    pub const getContext = libinput_device_get_context;
+
+    extern fn libinput_device_get_device_group(device: *Device) *DeviceGroup;
+    pub const getDeviceGroup = libinput_device_get_device_group;
+
+    extern fn libinput_device_get_sysname(device: *Device) [*:0]const u8;
+    pub const getSystemName = libinput_device_get_sysname;
+
+    extern fn libinput_device_get_name(device: *Device) [*:0]const u8;
+    pub const getName = libinput_device_get_name;
+
+    extern fn libinput_device_get_id_bustype(device: *Device) c_uint;
+    pub const getBusTypeId = libinput_device_get_id_bustype;
+
+    extern fn libinput_device_get_id_product(device: *Device) c_uint;
+    pub const getProductId = libinput_device_get_id_product;
+
+    extern fn libinput_device_get_id_vendor(device: *Device) c_uint;
+    pub const getVendorId = libinput_device_get_id_vendor;
+
+    extern fn libinput_device_get_output_name(device: *Device) ?[*:0]const u8;
+    pub const getOutputName = libinput_device_get_output_name;
+
     extern fn libinput_device_get_seat(device: *Device) *Seat;
     pub const getSeat = libinput_device_get_seat;
 
@@ -19,6 +55,112 @@ pub const Device = opaque {
     pub fn setSeatLogicalName(device: *Device, name: [*:0]const u8) !void {
         return if (libinput_device_set_seat_logical_name(device, name) != 0)
             return error.SetDeviceSeatLogicalNameFailed;
+    }
+
+    extern fn libinput_device_get_udev_device(device: *Device) ?*UdevDevice;
+    pub const getUdevDevice = libinput_device_get_udev_device;
+
+    extern fn libinput_device_led_update(device: *Device, leds: Led) void;
+    pub const updateLed = libinput_device_led_update;
+
+    extern fn libinput_device_has_capability(device: *Device, capability: Capability) c_int;
+    pub fn hasCapability(device: *Device, capability: Capability) bool {
+        return libinput_device_has_capability(device, capability) != 0;
+    }
+
+    extern fn libinput_device_get_size(device: *Device, width: *f64, height: *f64) c_int;
+    pub fn getSize(device: *Device, width: *f64, height: *f64) bool {
+        return libinput_device_get_size(device, width, height) == 0;
+    }
+
+    extern fn libinput_device_pointer_has_button(device: *Device, code: u32) c_int;
+    pub fn hasButton(device: *Device, code: u32) !bool {
+        return switch (libinput_device_pointer_has_button(device, code)) {
+            0 => false,
+            1 => true,
+            -1 => error.InvalidButtonCode,
+            else => unreachable,
+        };
+    }
+
+    extern fn libinput_device_keyboard_has_key(device: *Device, code: u32) c_int;
+    pub fn hasKey(device: *Device, code: u32) !bool {
+        return switch (libinput_device_keyboard_has_key(device, code)) {
+            0 => false,
+            1 => true,
+            -1 => error.InvalidKeyCode,
+            else => unreachable,
+        };
+    }
+
+    extern fn libinput_device_touch_get_touch_count(device: *Device) c_int;
+    pub fn getTouchCount(device: *Device) !c_int {
+        const count = libinput_device_touch_get_touch_count(device);
+        if (count == -1) {
+            return error.GetTouchCountFailed;
+        } else {
+            return count;
+        }
+    }
+
+    extern fn libinput_device_switch_has_switch(device: *Device, sw: Switch) c_int;
+    pub fn hasSwitch(device: *Device, sw: Switch) !bool {
+        return switch (libinput_device_switch_has_switch(device, sw)) {
+            0 => false,
+            1 => true,
+            -1 => error.HasSwitchFailed,
+            else => unreachable,
+        };
+    }
+
+    extern fn libinput_device_tablet_pad_get_num_buttons(device: *Device) c_int;
+    pub fn getTabletPadButtonsAmount(device: *Device) !c_int {
+        const count = libinput_device_tablet_pad_get_num_buttons(device);
+        if (count == -1) {
+            return error.GetTabletPadButtonsAmountFailed;
+        } else {
+            return count;
+        }
+    }
+
+    extern fn libinput_device_tablet_pad_get_num_dials(device: *Device) c_int;
+    pub fn getTabletPadDialsAmount(device: *Device) !c_int {
+        const count = libinput_device_tablet_pad_get_num_dials(device);
+        if (count == -1) {
+            return error.GetTabletPadDailsAmountFailed;
+        } else {
+            return count;
+        }
+    }
+
+    extern fn libinput_device_tablet_pad_get_num_rings(device: *Device) c_int;
+    pub fn getTabletPadRingsAmount(device: *Device) !c_int {
+        const count = libinput_device_tablet_pad_get_num_rings(device);
+        if (count == -1) {
+            return error.GetTabletPadRingsAmountFailed;
+        } else {
+            return count;
+        }
+    }
+
+    extern fn libinput_device_tablet_pad_get_num_strips(device: *Device) c_int;
+    pub fn getTabletPadStripsAmount(device: *Device) !c_int {
+        const count = libinput_device_tablet_pad_get_num_strips(device);
+        if (count == -1) {
+            return error.GetTabletPadStripsAmountFailed;
+        } else {
+            return count;
+        }
+    }
+
+    extern fn libinput_device_tablet_pad_has_key(device: *Device, code: u32) c_int;
+    pub fn hasTabletPadKey(device: *Device, code: u32) !bool {
+        return switch (libinput_device_tablet_pad_has_key(device, code)) {
+            0 => false,
+            1 => true,
+            -1 => error.HasTabletPadKeyFailed,
+            else => unreachable,
+        };
     }
 
     // Device configuration
@@ -221,11 +363,6 @@ pub const Device = opaque {
     pub fn getDefaultLeftHanded(device: *Device) bool {
         return libinput_device_config_left_handed_get_default(device) != 0;
     }
-
-    // Groups
-
-    extern fn libinput_device_get_device_group(device: *Device) *DeviceGroup;
-    pub const getDeviceGroup = libinput_device_get_device_group;
 };
 
 pub const DeviceGroup = opaque {};
@@ -406,6 +543,13 @@ pub const DwtpState = enum(c_int) { disabled = 0, enabled, _ };
 
 pub const TapToClickButtonMap = enum(c_int) { left_right_middle = 0, left_middle_right, _ };
 pub const ClickFingerButtonMap = enum(c_int) { left_right_middle = 0, left_middle_right, _ };
+
+pub const UdevDevice = opaque {};
+
+pub const Switch = enum(c_int) {
+    lid = 1,
+    tablet_mode = 2,
+};
 
 test {
     const std = @import("std");
