@@ -1,10 +1,14 @@
 .{
-    .name = "zig-libinput",
+    .name = .zig_libinput,
     .version = "0.0.0",
-    .dependencies = .{},
+    .fingerprint = 0xc2bd41b0eb488882,
+    .minimum_zig_version = "0.14.0",
+
     .paths = .{
         "build.zig",
         "build.zig.zon",
         "src",
+        "README.md",
+        "LICENSE",
     },
 }
